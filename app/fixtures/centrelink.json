@@ -1,0 +1,216 @@
+[
+{
+    "model": "centrelink.crarate",
+    "pk": 1,
+    "fields": {
+        "valid_from": "2020-03-01",
+        "valid_to": "2020-09-01"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 2,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 1,
+        "maximum_cra_payment": "137.20",
+        "lower_threshold": "122.40",
+        "upper_thershold": "305.33"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 3,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 2,
+        "maximum_cra_payment": "161.14",
+        "lower_threshold": "160.58",
+        "upper_thershold": "375.43"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 4,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 3,
+        "maximum_cra_payment": "182.00",
+        "lower_threshold": "160.58",
+        "upper_thershold": "403.25"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 5,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 4,
+        "maximum_cra_payment": "129.20",
+        "lower_threshold": "198.20",
+        "upper_thershold": "370.47"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 6,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 5,
+        "maximum_cra_payment": "161.14",
+        "lower_threshold": "237.72",
+        "upper_thershold": "452.57"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 7,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 6,
+        "maximum_cra_payment": "182.00",
+        "lower_threshold": "237.72",
+        "upper_thershold": "480.39"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 8,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 7,
+        "maximum_cra_payment": "91.47",
+        "lower_threshold": "122.40",
+        "upper_thershold": "244.36"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 9,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 8,
+        "maximum_cra_payment": "137.20",
+        "lower_threshold": "122.40",
+        "upper_thershold": "305.33"
+    }
+},
+{
+    "model": "centrelink.familysituationrate",
+    "pk": 10,
+    "fields": {
+        "cra_rate": 1,
+        "family_situation": 9,
+        "maximum_cra_payment": "129.20",
+        "lower_threshold": "122.40",
+        "upper_thershold": "294.67"
+    }
+},
+{
+    "model": "centrelink.maintenanceincometestrate",
+    "pk": 1,
+    "fields": {
+        "valid_from": "2020-03-10",
+        "valid_to": "2020-09-19"
+    }
+},
+{
+    "model": "centrelink.maintenancetyperate",
+    "pk": 1,
+    "fields": {
+        "maintenance_income_test_rate": 1,
+        "maintenance_type": 1,
+        "rate": "1620.60"
+    }
+},
+{
+    "model": "centrelink.maintenancetyperate",
+    "pk": 2,
+    "fields": {
+        "maintenance_income_test_rate": 1,
+        "maintenance_type": 2,
+        "rate": "3241.20"
+    }
+},
+{
+    "model": "centrelink.maintenancetyperate",
+    "pk": 3,
+    "fields": {
+        "maintenance_income_test_rate": 1,
+        "maintenance_type": 3,
+        "rate": "540.20"
+    }
+},
+{
+    "model": "centrelink.ftbrate",
+    "pk": 1,
+    "fields": {
+        "valid_from": "2020-03-20",
+        "valid_to": "2020-09-19",
+        "ftb_supplement": "751.90",
+        "income_free_area": "53728.00",
+        "maximum_income": "94316.00",
+        "additional_income_per_child": "0.00",
+        "ftb_a_base_rate_payments": "2281.25",
+        "large_family_supplement": "324.85"
+    }
+},
+{
+    "model": "centrelink.ftbamaximumpayment",
+    "pk": 1,
+    "fields": {
+        "ftb_rate": 1,
+        "dependant_child_age_range": 1,
+        "maximum_payment": "5518.80"
+    }
+},
+{
+    "model": "centrelink.ftbamaximumpayment",
+    "pk": 2,
+    "fields": {
+        "ftb_rate": 1,
+        "dependant_child_age_range": 2,
+        "maximum_payment": "6953.25"
+    }
+},
+{
+    "model": "centrelink.ftbamaximumpayment",
+    "pk": 3,
+    "fields": {
+        "ftb_rate": 1,
+        "dependant_child_age_range": 3,
+        "maximum_payment": "6953.25"
+    }
+},
+{
+    "model": "centrelink.ftbamaximumpayment",
+    "pk": 4,
+    "fields": {
+        "ftb_rate": 1,
+        "dependant_child_age_range": 4,
+        "maximum_payment": "1529.35"
+    }
+},
+{
+    "model": "centrelink.rentassessmentrate",
+    "pk": 1,
+    "fields": {
+        "name": "Current",
+        "ftb": 15,
+        "maintenance": 25,
+        "cra": 100,
+        "active": "Yes"
+    }
+},
+{
+    "model": "centrelink.rentassessmentrate",
+    "pk": 2,
+    "fields": {
+        "name": "Previous",
+        "ftb": 11,
+        "maintenance": 25,
+        "cra": 25,
+        "active": null
+    }
+}
+]

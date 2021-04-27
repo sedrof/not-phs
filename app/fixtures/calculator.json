@@ -1,0 +1,265 @@
+[
+{
+    "model": "calculator.transaction",
+    "pk": 1,
+    "fields": {
+        "chp_reference": "Abc123",
+        "rent_effective_date": "2020-08-01",
+        "income_period": "Weekly",
+        "property_market_rent": "500.00"
+    }
+},
+{
+    "model": "calculator.transaction",
+    "pk": 2,
+    "fields": {
+        "chp_reference": "xyz789",
+        "rent_effective_date": "2020-08-02",
+        "income_period": "Weekly",
+        "property_market_rent": "900.00"
+    }
+},
+{
+    "model": "calculator.transaction",
+    "pk": 3,
+    "fields": {
+        "chp_reference": "xyz7891",
+        "rent_effective_date": "2020-08-02",
+        "income_period": "Weekly",
+        "property_market_rent": "900.00"
+    }
+},
+{
+    "model": "calculator.transaction",
+    "pk": 4,
+    "fields": {
+        "chp_reference": "xyz7822",
+        "rent_effective_date": "2020-09-02",
+        "income_period": "Weekly",
+        "property_market_rent": "1000.00"
+    }
+},
+{
+    "model": "calculator.transaction",
+    "pk": 5,
+    "fields": {
+        "chp_reference": "xyz78242",
+        "rent_effective_date": "2020-09-02",
+        "income_period": "Weekly",
+        "property_market_rent": "1000.00"
+    }
+},
+{
+    "model": "calculator.familygroup",
+    "pk": 1,
+    "fields": {
+        "name": "Ahmed Zakaria's Family",
+        "transaction": 1,
+        "family_type": 5,
+        "last_rent": "500.00",
+        "any_income_support_payment": false,
+        "cra_eligibilty": false,
+        "cra_amount": null,
+        "ftb_a": "100.00",
+        "ftb_b": "80.00",
+        "maintenance_amount": "10000.00",
+        "maintenance_type": 1,
+        "number_of_additional_children": null
+    }
+},
+{
+    "model": "calculator.familygroup",
+    "pk": 2,
+    "fields": {
+        "name": "Amr Hesham's Family",
+        "transaction": 2,
+        "family_type": 4,
+        "last_rent": "900.00",
+        "any_income_support_payment": false,
+        "cra_eligibilty": false,
+        "cra_amount": null,
+        "ftb_a": "80.00",
+        "ftb_b": "60.00",
+        "maintenance_amount": "10000.00",
+        "maintenance_type": 1,
+        "number_of_additional_children": null
+    }
+},
+{
+    "model": "calculator.familygroup",
+    "pk": 3,
+    "fields": {
+        "name": "Amr Hesham's Family",
+        "transaction": 3,
+        "family_type": 4,
+        "last_rent": "900.00",
+        "any_income_support_payment": false,
+        "cra_eligibilty": false,
+        "cra_amount": null,
+        "ftb_a": "80.00",
+        "ftb_b": "60.00",
+        "maintenance_amount": "10000.00",
+        "maintenance_type": 1,
+        "number_of_additional_children": null
+    }
+},
+{
+    "model": "calculator.familygroup",
+    "pk": 4,
+    "fields": {
+        "name": "Ahmed Hesham's Family",
+        "transaction": 4,
+        "family_type": 4,
+        "last_rent": "1000.00",
+        "any_income_support_payment": true,
+        "cra_eligibilty": false,
+        "cra_amount": null,
+        "ftb_a": "80.00",
+        "ftb_b": "60.00",
+        "maintenance_amount": "10000.00",
+        "maintenance_type": 1,
+        "number_of_additional_children": null
+    }
+},
+{
+    "model": "calculator.familygroup",
+    "pk": 5,
+    "fields": {
+        "name": "Zakaria Bassiouny's Family",
+        "transaction": 1,
+        "family_type": 1,
+        "last_rent": "500.00",
+        "any_income_support_payment": false,
+        "cra_eligibilty": false,
+        "cra_amount": null,
+        "ftb_a": "30.00",
+        "ftb_b": "20.00",
+        "maintenance_amount": null,
+        "maintenance_type": null,
+        "number_of_additional_children": null
+    }
+},
+{
+    "model": "calculator.familygroup",
+    "pk": 6,
+    "fields": {
+        "name": "Ahmed Hesham's Family",
+        "transaction": 5,
+        "family_type": 4,
+        "last_rent": "1000.00",
+        "any_income_support_payment": true,
+        "cra_eligibilty": false,
+        "cra_amount": null,
+        "ftb_a": "80.00",
+        "ftb_b": "60.00",
+        "maintenance_amount": "10000.00",
+        "maintenance_type": 1,
+        "number_of_additional_children": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 1,
+    "fields": {
+        "transaction": 1,
+        "family_group": 1,
+        "name": "Ahmed Zakaria",
+        "date_of_birth": "1983-08-04",
+        "relationship": 1,
+        "dependant_child_age_range": null,
+        "care_percentage": null,
+        "income": "2000.00",
+        "rent_percentage": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 2,
+    "fields": {
+        "transaction": 1,
+        "family_group": 1,
+        "name": "Donia Nour",
+        "date_of_birth": "1984-10-14",
+        "relationship": 2,
+        "dependant_child_age_range": null,
+        "care_percentage": null,
+        "income": "500.00",
+        "rent_percentage": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 3,
+    "fields": {
+        "transaction": 1,
+        "family_group": 1,
+        "name": "Mariam",
+        "date_of_birth": "2012-01-12",
+        "relationship": 3,
+        "dependant_child_age_range": 1,
+        "care_percentage": null,
+        "income": null,
+        "rent_percentage": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 4,
+    "fields": {
+        "transaction": 3,
+        "family_group": 3,
+        "name": "Amr Hesham",
+        "date_of_birth": "1980-08-02",
+        "relationship": 1,
+        "dependant_child_age_range": null,
+        "care_percentage": null,
+        "income": "2000.00",
+        "rent_percentage": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 5,
+    "fields": {
+        "transaction": 4,
+        "family_group": 4,
+        "name": "Amr Hesham",
+        "date_of_birth": "1980-08-02",
+        "relationship": 1,
+        "dependant_child_age_range": null,
+        "care_percentage": null,
+        "income": "2000.00",
+        "rent_percentage": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 6,
+    "fields": {
+        "transaction": 1,
+        "family_group": 5,
+        "name": "Zakaria Bassiouny",
+        "date_of_birth": "1950-08-02",
+        "relationship": 1,
+        "dependant_child_age_range": null,
+        "care_percentage": null,
+        "income": "900.00",
+        "rent_percentage": null
+    }
+},
+{
+    "model": "calculator.familymember",
+    "pk": 7,
+    "fields": {
+        "transaction": 5,
+        "family_group": 6,
+        "name": "Amr Hesham",
+        "date_of_birth": "1980-08-02",
+        "relationship": 1,
+        "dependant_child_age_range": null,
+        "care_percentage": null,
+        "income": "2000.00",
+        "rent_percentage": null
+    }
+}
+]

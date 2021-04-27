@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    {% block title %}
+      
+
+        Report
+
+    {% endblock title %}
+
+
+    {% block content %}
+    
+</head>
+<div class="d-flex justify-content-center">
+   
+<div  class="panel-body print-container">
+    <div  class="panel-body print-container">
+<table class="tg">
+    <thead>
+        <tr>
+            <th class="tg-fv77" colspan="12" rowspan="2"><span style="color:#3531FF">Report For Tenant</span></th>
+        </tr>
+        <tr>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="tg-0pky" colspan="9">CHP Reference</td>
+            <td class="tg-0pky" colspan="3">{{transaction.chp_reference}}</td>
+ 
+        </tr>
+        <tr>
+            <td class="tg-0pky" colspan="9">Rent Effective From (dd/mm/yyyy)</td>
+            <td class="tg-0pky" colspan="3">{{transaction.rent_effective_date}}</td>
+
+        </tr>
+        
+        <tr>
+            <td class="tg-0lax" colspan="9">CRA Fortnightly Rates valid for 6 months from</td>
+            <td class="tg-0lax" colspan="3">{{transaction.cra_rate_from}}</td><hr>
+        </tr>
+        <tr>
+            <td class="tg-0lax" colspan="9">Market Rent of the Property</td>
+            <td class="tg-0lax" colspan="3">{{transaction.property_market_rent}}</td>
+        </tr>
+        <tr>
+            <td class="tg-0lax" colspan="9">Number of Family Group(s)</td>
+            <td class="tg-0lax" colspan="3">{{transaction.number_of_family_group}}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<table class="tg" style="undefined;table-layout: fixed; width: 714px">
+    <colgroup>
+        <col style="width: 86px">
+        <col style="width: 201px">
+        <col style="width: 109px">
+        <col style="width: 63px">
+        <col style="width: 121px">
+        <col style="width: 134px">
+    </colgroup>
+    <thead>
+        <tr>
+            {% for f in transaction.family_groups.all %}
+            <th style="text-align:left">Family No</th>
+            <th style="text-align:left">Income Type</th>
+            <th style="text-align:left">Name</th>
+            <th style="text-align:left">Rent %</th>
+            <th style="text-align:left">Weekly Income</th>
+            <th style="text-align:left"><span style="background-color:#ffe0c7">Rent Component</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="tg-4erg">{{f.name}}</td>
+            <td >{% for m in f.family_members.all %}{{ m.num_of_family_members }}<br>{% endfor %}</td>
+            <td >{% for m in f.family_members.all %} {{m.name}} <br> {% endfor %}</td>
+            <td class="tg-4erg">{% for m in f.family_members.all %} {{m.effective_rent_percentage}} <br> {% endfor %}
+            </td>
+            <td class="tg-4erg">{% for m in f.family_members.all %} {{m.income}} <br> {% endfor %}</td>
+            <td class="tg-1qbe">{% for m in f.family_members.all %} {{m.income_component|stringformat:".2f"}} <br> {% endfor %}</td>
+        </tr>
+        <tr>
+            <td class="tg-ncd7" colspan="4"></td>
+            <td><span style="background-color:#17e9b5">sub total</td>
+            <td><span style="background-color:#17e9b5">{{f.income_component|stringformat:".2f"}} </td>
+        </tr>
+        <tr>
+            <td class="tg-4erg"></td>
+            <td class="tg-4erg">FTB(A&amp;B Combined)</td>
+            <td class="tg-4erg"></td>
+            <td class="tg-4erg">{{f.ftb_rate|stringformat:".2f"}}</td>
+            <td class="tg-4erg">{{f.ftb_combined|stringformat:".2f"}}</td>
+            <td class="tg-4erg">{{f.ftb_component|stringformat:".2f"}}</td>
+        </tr>
+        <div>
+        <tr>
+            <td class="tg-4erg"></td>
+            <td class="tg-4erg">Maintenance</td>
+            <td class="tg-4erg"></td>
+            <td class="tg-4erg">{{f.maintenance_rate|stringformat:".2f"}}</td>
+            <td class="tg-4erg">{{f.weekly_maintenance|stringformat:".2f"}}</td>
+            <td class="tg-4erg">{{f.maintenance_component|stringformat:".2f"}}</td>
+        </tr>
+    </div>
+        <tr>
+            <td class="tg-4erg"></td>
+            <td class="tg-1qbe">CRA</td>
+            <td class="tg-4erg"></td>
+            <td class="tg-4erg">{{f.cra_rate|stringformat:".2f"}}</td>
+            <td class="tg-4erg">{{f.cra_component}}</td>
+            <td class="tg-3247">{{f.cra_component}}</td>
+        </tr>
+
+        <tr>
+            <td class="tg-4erg"></td>
+            <td class="tg-080q"><span style="background-color:#17e9b5">Rent Charged</span> </td>
+            <td class="tg-yoze"></td>
+            <td class="tg-yoze"></td>
+            <td class="tg-yoze"></td>
+            <td class="tg-yoze"><span style="background-color:#17e9b5">{{f.rent_charged|stringformat:".2f"}}</span></td>
+        </tr>
+    
+        {% endfor %}
+        <tr>
+            <td class="tg-0pky"></td>
+            <td class="tg-fb1n" colspan="4"><span style="background-color:#17e9b5">Household Rent</span> </td>
+            <td class="tg-fb1n"><span style="background-color:#17e9b5">{{transaction.household_rent|stringformat:".2f"}}</span></td>
+        </tr>
+    </tbody>
+    <hr>
+</table>
+
+<hr>
+{% endblock content %}
+</html>

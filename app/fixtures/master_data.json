@@ -1,0 +1,170 @@
+[
+{
+    "model": "master_data.familysituation",
+    "pk": 1,
+    "fields": {
+        "name": "Single",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 2,
+    "fields": {
+        "name": "Single, 1-2 kids",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 3,
+    "fields": {
+        "name": "Single, 3+ kids",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 4,
+    "fields": {
+        "name": "Couple",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 5,
+    "fields": {
+        "name": "Couple, 1-2 kids",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 6,
+    "fields": {
+        "name": "Couple, 3+ kids",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 7,
+    "fields": {
+        "name": "Single Sharer",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 8,
+    "fields": {
+        "name": "One of a couple sep. due to illness, no dep. Children",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.familysituation",
+    "pk": 9,
+    "fields": {
+        "name": "One of a couple temp. sep., no dep. Children",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.maintenancetype",
+    "pk": 1,
+    "fields": {
+        "name": "Single",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.maintenancetype",
+    "pk": 2,
+    "fields": {
+        "name": "Couple",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.maintenancetype",
+    "pk": 3,
+    "fields": {
+        "name": "Additional",
+        "display_name": "Additional Child"
+    }
+},
+{
+    "model": "master_data.dependantchildagerange",
+    "pk": 1,
+    "fields": {
+        "name": "DC-LT 13Y",
+        "display_name": "Under 13"
+    }
+},
+{
+    "model": "master_data.dependantchildagerange",
+    "pk": 2,
+    "fields": {
+        "name": "DC-13-15Y",
+        "display_name": "13-15 years"
+    }
+},
+{
+    "model": "master_data.dependantchildagerange",
+    "pk": 3,
+    "fields": {
+        "name": "DC-16-19Y-SeSt",
+        "display_name": "16-19 Y Sec. St. or Ex (1)"
+    }
+},
+{
+    "model": "master_data.dependantchildagerange",
+    "pk": 4,
+    "fields": {
+        "name": "DC-In ApCa Org 0-19Y",
+        "display_name": "In App. Child Care Org 0-19Y"
+    }
+},
+{
+    "model": "master_data.relationship",
+    "pk": 1,
+    "fields": {
+        "name": "Tenant",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.relationship",
+    "pk": 2,
+    "fields": {
+        "name": "Partner",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.relationship",
+    "pk": 3,
+    "fields": {
+        "name": "Dependent Child",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.relationship",
+    "pk": 4,
+    "fields": {
+        "name": "Independent Child",
+        "display_name": null
+    }
+},
+{
+    "model": "master_data.relationship",
+    "pk": 5,
+    "fields": {
+        "name": "Other",
+        "display_name": null
+    }
+}
+]

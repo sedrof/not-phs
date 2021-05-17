@@ -133,11 +133,9 @@ class Batch(models.Model):
             self.message += 'Transaction "' + str(trans.chp_reference) + '" Created\n'
             mt = MaintenanceType.objects.filter(
                       name=self.family_group_maintenance_type).first()
-            mt.save()
             if mt:
                 ft = FamilySituation.objects.filter(
                           name=self.family_group_family_type).first()
-                ft.save()
                 if ft:
                     fg, created = FamilyGroup.objects.update_or_create(
                         transaction=trans,
@@ -160,10 +158,9 @@ class Batch(models.Model):
                     self.message += 'Family Group "' + str(fg.name) + '" Created\n'
                     r = Relationship.objects.filter(
                                name=self.family_member_relationship).first()
-                    r.save()
                     if r:
                         fm, created = FamilyMember.objects.update_or_create(
-                            transaction=trans,
+                            # transaction=trans,
                             contact_id=self.family_member_contact_id,
                             family_group= fg,
                             defaults={

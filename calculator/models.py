@@ -16,7 +16,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 class Transaction(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     income_period_choices = (('Weekly', 'Weekly'), ('Fortnightly',
                                                     'Fortnightly'))
     chp_reference = models.CharField(max_length=50, unique=True)
@@ -38,7 +38,7 @@ class Transaction(models.Model):
     state = models.CharField(max_length=50, null=True, blank=True)
     group = models.OneToOneField(Group,
                                  on_delete=models.CASCADE,
-                                 null=True)
+                                 null=True, blank=True)
     def __str__(self):
         # return 'CHP: ' + str(self.chp_reference)
         return str(self.chp_reference)
@@ -59,21 +59,21 @@ class Transaction(models.Model):
 
     
 
-    def clean(self):
-        count_fg = self.family_groups.count()
+    # def clean(self):
+    #     count_fg = self.family_groups.count()
 
-        # if self.number_of_family_group != count_fg:
-        #     raise ValidationError(
-        #         'Number of family group doesnt match with FG_NO.')
-        if self.rent_effective_date is None:
-            raise ValidationError('Please enter rent_effective_date.')
-        elif not self.chp_reference:
-            raise ValidationError('Please enter chp_reference.')
-        elif not self.income_period:
-            raise ValidationError('Please enter income_period.')
-        elif (self.property_market_rent or 0) >= 10000 or (self.property_market_rent or 0) <= 0:
-            raise ValidationError(
-                'Property Market Rent should be more than 0 and less than 10000')
+    #     # if self.number_of_family_group != count_fg:
+    #     #     raise ValidationError(
+    #     #         'Number of family group doesnt match with FG_NO.')
+    #     if self.rent_effective_date is None:
+    #         raise ValidationError('Please enter rent_effective_date.')
+    #     elif not self.chp_reference:
+    #         raise ValidationError('Please enter chp_reference.')
+    #     elif not self.income_period:
+    #         raise ValidationError('Please enter income_period.')
+    #     elif (self.property_market_rent or 0) >= 10000 or (self.property_market_rent or 0) <= 0:
+    #         raise ValidationError(
+    #             'Property Market Rent should be more than 0 and less than 10000')
 
     @property
     def print_report(self):
@@ -144,10 +144,6 @@ class Transaction(models.Model):
                 return False
         return True
 
-    @property
-    def family_m(self):
-        for family in self.fmember.all():
-            return family.name, family.age, family.transaction, family.family_group
 
     @property
     def household_rent(self):
@@ -155,7 +151,6 @@ class Transaction(models.Model):
         for family_group in self.family_groups.all():
             household_rent += float(family_group.rent_charged)
         try:
-            print(household_rent)
             return min(float(household_rent or 0), (self.property_market_rent or 0))
         except TypeError:
             return 0
@@ -164,8 +159,10 @@ class Transaction(models.Model):
 
     @property
     def cra_compon(self):
+        cra = []
         for f in self.family_groups.all():
-            return float(f.cra_component or 0)
+            cra.append(f.cra_component)
+        return cra
 
     @property
     def report(self):
@@ -380,12 +377,45 @@ class FamilyGroup(models.Model):
 
     @property
     def ftb_combined(self):
+        if (self.cra_eligibilty) and ((self.ftb_a or 0) > 0 or (self.ftb_b or 0) > 0) and (
+                self.any_income_support_payment) and (self.maintenance_amount):
+            return (
+                CRA_5(
+                    self.lower_threshold,
+                    self.upper_thershold,
+                    self.maximum_cra_payment,
+                    self.transaction.property_market_rent,
+                    self.income_component,
+                    self.maintenance_amount,
+                    self.maintenance_component,
+                    self.ftb_a,
+                    self.ftb_b,
+                    self.adjustable_basket,
+                    self.income_free_area,
+                    self.last_rent,
+                    self.cra_amount))[4]
 
-        return (self.ftb_a or 0) + (self.ftb_b or 0)
+        elif (self.cra_eligibilty) and ((self.ftb_a or 0) > 0 or (self.ftb_b or 0) > 0) and not (
+                self.any_income_support_payment):
+            return (
+                CRA_6(
+                    self.lower_threshold,
+                    self.upper_thershold,
+                    self.maximum_cra_payment,
+                    self.transaction.property_market_rent,
+                    self.income_component,
+                    self.maintenance_component,
+                    self.ftb_a,
+                    self.ftb_b,
+                    self.adjustable_basket,
+                    self.last_rent,
+                    self.cra_amount))[4]
+        else:
+            return (self.ftb_a or 0) + (self.ftb_b or 0)
 
     @property
     def ftb_component(self):
-        if (self.cra_eligibilty) and (self.ftb_combined > 0) and (
+        if (self.cra_eligibilty) and ((self.ftb_a or 0) > 0 or (self.ftb_b or 0) > 0) and (
                 self.any_income_support_payment) and (self.maintenance_amount):
             return (
                 CRA_5(
@@ -403,7 +433,7 @@ class FamilyGroup(models.Model):
                     self.last_rent,
                     self.cra_amount))[2]
 
-        elif (self.cra_eligibilty) and (self.ftb_combined > 0) and not (
+        elif (self.cra_eligibilty) and ((self.ftb_a or 0) > 0 or (self.ftb_b or 0) > 0) and not (
                 self.any_income_support_payment):
             return (
                 CRA_6(
@@ -428,7 +458,7 @@ class FamilyGroup(models.Model):
 
     @property
     def cra_component(self):
-        if (self.cra_eligibilty) and (self.ftb_component == 0) and (
+        if (self.cra_eligibilty) and ((self.ftb_a or 0) == 0 and (self.ftb_b or 0 ) == 0) and (
                 self.any_income_support_payment):
             return (
                 CRA_2(
@@ -440,10 +470,7 @@ class FamilyGroup(models.Model):
                     self.maintenance_component,
                     self.last_rent))[0]
 
-        elif (self.cra_eligibilty) and (
-                self.ftb_component
-                == 0) and not (self.any_income_support_payment):
-
+        elif (self.cra_eligibilty) and ((self.ftb_a or 0) == 0 and (self.ftb_b or 0 ) == 0) and not (self.any_income_support_payment):
             return (
                 CRA_3(
                     self.lower_threshold,
@@ -452,8 +479,8 @@ class FamilyGroup(models.Model):
                     self.transaction.property_market_rent,
                     self.last_rent,
                     self.income_component,
-                    self.maintenance_amount,
-                    self.cra_amount))[0]
+                    self.cra_amount,
+                    self.maintenance_component))[1]
         elif (self.cra_eligibilty) and (self.ftb_component is not None) and (
                 self.any_income_support_payment) and (
                     self.maintenance_component == 0):
@@ -610,8 +637,8 @@ class FamilyGroup(models.Model):
                     self.transaction.property_market_rent,
                     self.last_rent,
                     self.income_component,
-                    self.maintenance_component,
-                    self.cra_amount))[2]
+                    self.cra_amount,
+                    self.maintenance_component))[0]
         elif (self.cra_eligibilty) and (self.ftb_component is not None) and (
                 self.any_income_support_payment) and (
                     self.maintenance_component == 0):
@@ -669,8 +696,8 @@ class FamilyGroup(models.Model):
 
 
 class FamilyMember(models.Model):
-    transaction = models.ForeignKey(
-        Transaction, on_delete=models.CASCADE, related_name="fmember")
+    # transaction = models.ForeignKey(
+        # Transaction, on_delete=models.CASCADE, related_name="fmember", null=True, blank=True)
     family_group = models.ForeignKey(FamilyGroup,
                                      on_delete=models.CASCADE,
                                      null=True,
@@ -752,7 +779,6 @@ but incl. ES(1) for all payments and FTB-A & FTB-B''')
     def clean(self):
         from django.core.exceptions import ValidationError
         b = ["Tenant", "Partner", "Others"]
-        print(self.age)
         if not self.name or not self.date_of_birth or not self.relationship:
             raise ValidationError(
                 'Make sure to enter all your personal info, Eg: name/surname B.date / ID')
@@ -781,9 +807,13 @@ but incl. ES(1) for all payments and FTB-A & FTB-B''')
 
     @property
     def weekly_income(self):
-        if self.transaction.income_period == 'Weekly':
-            return self.income
-        return (self.income or 0) / 2
-
+        # if self.transaction.income_period == 'Weekly':
+        #     return self.income
+        # return (self.income or 0) / 2
+        try:
+            if self.family_group.transaction.income_period == 'Weekly':
+                return self.income
+        except AttributeError:
+            return 0
     def __str__(self):
         return str(self.name)

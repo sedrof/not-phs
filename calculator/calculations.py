@@ -27,7 +27,7 @@ def rent_charged_func(lower, uper, max, family, rent):
     return float(rent_charged or 0)
 
 
-def family_contribution_fun(income, ftb_a, ftb_b, maintenance, property_market_rent):
+def family_contribution_func(income, ftb_a, ftb_b, maintenance, property_market_rent):
     # if income and ftb_a and ftb_b and maintenance and property_market_rent is not None:
     family_contribution = min(
         float(income or 0) + float(ftb_a or 0) + float(ftb_b or 0) + float(maintenance or 0), float(property_market_rent or 0))
@@ -79,7 +79,7 @@ def cra_func(rent_charged, lower_threshold, upper_thershold, maximum_cra_payment
 def CRA_3(lower_threshold, upper_thershold, maximum_cra_payment,
           property_market_rent, last_rent, income_component, cra_amount, maintenance_component):
     # ftb_b = 0
-    family_contribution_caped = family_contribution_fun(
+    family_contribution_caped = family_contribution_func(
         income_component, 0.00, 0.00, maintenance_component, property_market_rent)
     # Calculate cra_rate last rent
     cra_last_rent = cra_func(
@@ -102,6 +102,8 @@ def CRA_3(lower_threshold, upper_thershold, maximum_cra_payment,
                                             family_contribution_caped, property_market_rent)
     cra_initial = cra_func(rent_charged_initial, lower_threshold,
                            upper_thershold, maximum_cra_payment)
+    # print(cra_reduction_last_rent_pa, 'latest')
+
     for i in range(20):
         cra_initial_pa = (float(cra_initial or 0) / 7) * 365
 
@@ -122,7 +124,12 @@ def CRA_3(lower_threshold, upper_thershold, maximum_cra_payment,
 
     latest_cra = cra_func(rent_charged_adjusted, adj_lower_threshold, adj_upper_thershold,
                         adj_maximum_cra_payment)
-    return float(rent_charged_adjusted), float(latest_cra)
+    print(rent_charged_initial)
+    if rent_charged_adjusted < family_contribution_caped:
+        rent_charged_adjusted = family_contribution_caped
+
+
+    return float(rent_charged_adjusted), "%.2f" % float(latest_cra)
 
 """ Calcullations for method 2 """
 # def cra_m_3(rent_charged, lower, upper, max):
@@ -142,7 +149,7 @@ def CRA_2(lower_threshold, upper_thershold, maximum_cra_payment,
     cra_rate = cra_func(rent_charged, lower_threshold,
                         upper_thershold, maximum_cra_payment)
 
-    return "%.2f" % float(cra_rate), float(last_rent), "%.2f" % float(rent_charged)
+    return "%.2f" % float(cra_rate), float(last_rent), float(rent_charged)
 
 
 """ Calculations for method 4 """
@@ -156,7 +163,7 @@ def CRA_4(lower_threshold, upper_thershold, maximum_cra_payment,
         lower_threshold, upper_thershold, maximum_cra_payment, family_rent, property_market_rent)
     cra_rate = cra_func(rent_charged, lower_threshold,
                         upper_thershold, maximum_cra_payment)
-    return "%.2f" % float(cra_rate), float(last_rent), "%.2f" % float(rent_charged)
+    return "%.2f" % float(cra_rate), float(last_rent), float(rent_charged)
 
 
 """ Calcuations for method 5 """
@@ -220,10 +227,10 @@ def CRA_5(lower_threshold, upper_thershold, maximum_cra_payment,
         float(ftb_payable_unadjusted or 0) / 365) * 7 * (15/100)
     ftb_payable_adjusted = float(ftb_payable_unadjusted) - float(ftb_reduction)
     ftb_a_Adjusted = (float(ftb_payable_adjusted) / 365) * 7 * (15 / 100)
-    ftb_b = float(ftb_b or 0) * 15 / 100
+    # ftb_b = float(ftb_b or 0) * 15 / 100
     # ftb_total = float(ftb_a_Adjusted) + float(ftb_b)
 
-    family_contribution_caped_initial = family_contribution_fun(income_component, ftb_payable_unadjusted_pw, ftb_b,
+    family_contribution_caped_initial = family_contribution_func(income_component, ftb_payable_unadjusted_pw, ftb_b,
                                                                 maintenance_component, property_market_rent)
 
     rent_charged_initial = rent_charged_func(lower_threshold, upper_thershold, maximum_cra_payment,
@@ -272,8 +279,8 @@ def CRA_5(lower_threshold, upper_thershold, maximum_cra_payment,
                 adj_lower_threshold or 0
             )
 
-        adj_family_contribution = family_contribution_fun(income_component,
-                                                          ftb_a_adjusted_pw, ftb_b,
+        adj_family_contribution = family_contribution_func(income_component,
+                                                          ftb_a_adjusted_pw, (ftb_b or 0) *15 /100,
                                                           maintenance_component, property_market_rent)
 
         adj_rent_charged = rent_charged_func(adj_lower_threshold, adj_upper_thershold,
@@ -284,11 +291,22 @@ def CRA_5(lower_threshold, upper_thershold, maximum_cra_payment,
                            maximum_cra_payment)
 
         cra_initial = adj_cra
+    
     latest_cra = cra_func(adj_rent_charged, adj_lower_threshold, adj_upper_thershold,
                           adj_maximum_cra_payment,
                           adj_family_contribution, property_market_rent)
-    latest_ftb = float(ftb_a_adjusted_pw or 0) + ftb_b
-    return "%.2f" % float(latest_cra), float(adj_rent_charged), "%.2f" % float(latest_ftb), float(cra_last_rent)
+    ftb_b = float(ftb_b or 0) * 15 / 100
+    latest_ftb = float(ftb_a_adjusted_pw or 0) + float(ftb_b or 0)
+    reversed_ftb = (float(latest_ftb or 0) * 100) / 15
+    # return (
+    #     "%.2f" % float(latest_cra),
+    #     float(adj_rent_charged),
+    #     "%.2f" % float(latest_ftb),
+    #     float(cra_last_rent),
+    #     "%.2f" % float(reversed_ftb),
+
+    #        )
+    return "%.2f" % float(latest_cra), float(adj_rent_charged), float(latest_ftb), float(cra_last_rent), float(reversed_ftb)
 
 
 """ Calculations for method 6 """
@@ -350,8 +368,7 @@ def CRA_6(
         ftb_payable_unadjust or 0) - float(ftb_reduction or 0)  # G90
     ftb_payable_unadjust_pw = (
         float(ftb_payable_unadjust or 0) / 365) * 7 * 0.15
-
-    family_contribution_caped_initial = family_contribution_fun(
+    family_contribution_caped_initial = family_contribution_func(
         income_component,
         ftb_payable_unadjust_pw,
         ftb_b_component,
@@ -412,7 +429,7 @@ def CRA_6(
                 adj_lower_threshold or 0
             )
 
-        adj_family_contribution = family_contribution_fun(income_component, ftb_a_adjusted_pw, ftb_b,
+        adj_family_contribution = family_contribution_func(income_component, ftb_a_adjusted_pw, (ftb_b or 0) *15 /100,
                                                           maintenance_component,
                                                           property_market_rent)
 
@@ -424,15 +441,16 @@ def CRA_6(
                            maximum_cra_payment)
 
         initial_cra = adj_cra
-
     latest_cra = cra_func(adj_rent_charged, adj_lower_threshold, adj_upper_thershold,
                           adj_maximum_cra_payment,
                           adj_family_contribution, property_market_rent)
     ftb_b = float(ftb_b or 0) * 15 / 100
     latest_ftb = float(ftb_a_adjusted_pw or 0) + float(ftb_b or 0)
+    reversed_ftb = (float(latest_ftb or 0) * 100) / 15
     return (
         "%.2f" % float(latest_cra),
-        "%.2f" % float(adj_rent_charged),
-        "%.2f" % float(latest_ftb),
-        "%.2f" % float(cra_last_rent)
+        float(adj_rent_charged),
+        float(latest_ftb),
+        float(cra_last_rent),
+        float(reversed_ftb)
     )

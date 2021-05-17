@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group, User
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from import_export import resources
-
+import nested_admin
 
 
 
@@ -64,43 +64,15 @@ admin.site.index_title = 'CRA Calculator'
 admin.site.site_title = 'CRA Calculator'
 
 
-class FamilyGroupInline(admin.TabularInline):
-    model = FamilyGroup
-    extra = 0
-
-    def sufficient_info_provided(self, obj):
-        return obj.sufficient_information_provided
-    sufficient_info_provided.boolean = True
-
-    def complete(self, obj):
-        return obj.complete
-    complete.boolean = True
-
-    fieldsets = (
-        # (None, {
-        #     'fields': ('complete',),
-        # }),
-        ('FamilyGroup Details', {
-            'fields': ('name', 'family_type', 'last_rent', 'any_income_support_payment',
-                'cra_eligibilty', 'cra_amount', 'ftb_a', 'ftb_b', 'maintenance_amount', 
-                        'maintenance_type', 'number_of_additional_children', 'sufficient_info_provided'),
-        }),)
-    readonly_fields = ['sufficient_info_provided', 'complete', ]
 
 
-class FamilyMemberInline(admin.TabularInline):
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        action = request.META['PATH_INFO'].strip('/').split('/')[-1]
-        if action == 'change':
-            transaction_id = request.META['PATH_INFO'].strip(
-                '/').split('/')[-2]
-            if db_field.name == "family_group":
-                kwargs["queryset"] = FamilyGroup.objects.filter(
-                    transaction=transaction_id)
-        return super(FamilyMemberInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+class FamilyMemberInline(nested_admin.NestedTabularInline):
     model = FamilyMember
     extra = 0
+    max_num = 5
 
+    
     def sufficient_info_provided(self, obj):
         return obj.sufficient_information_provided
     sufficient_info_provided.boolean = True
@@ -108,41 +80,36 @@ class FamilyMemberInline(admin.TabularInline):
     def age(self, obj):
         return obj.age
 
-    fields = ['family_group', 'name', 'date_of_birth', 'age', 'relationship',
-              'care_percentage', 'income', 'rent_percentage', 'sufficient_info_provided', ]
-    readonly_fields = ['age', 'sufficient_info_provided', ]
+    fieldsets = (
+        
+        ('FamilyMember Details', {
+            'fields': ('name', 'date_of_birth', 'age', 'income',
+                'relationship', 'rent_percentage', 'care_percentage', 'sufficient_info_provided'),
+        }),)
+    readonly_fields = ['sufficient_info_provided', 'age' ]
 
 
-class FamilySituationRateInline(admin.TabularInline):
-    model = FamilySituationRate
+
+class FamilyGroupInline(nested_admin.NestedTabularInline):
+    model = FamilyGroup
+    inlines = [FamilyMemberInline,]
     extra = 0
+    def sufficient_info_provided(self, obj):
+        return obj.sufficient_information_provided
+    sufficient_info_provided.boolean = True
 
+    fieldsets = (
+        ('FamilyGroup Details', {
+            'fields': ('name', 'family_type', 'last_rent', 'any_income_support_payment',
+                'cra_eligibilty', 'cra_amount', 'ftb_a', 'ftb_b', 'maintenance_amount', 
+                        'maintenance_type', 'number_of_additional_children', 'sufficient_info_provided'),
+        }),)
+    readonly_fields = ['sufficient_info_provided' ]
 
-class FtbAMaximumPaymentInline(admin.TabularInline):
-    model = FtbAMaximumPayment
-    extra = 0
-
-
-class MaintenanceTypeRateInline(admin.TabularInline):
-    model = MaintenanceTypeRate
-    extra = 0
-
-# class TemplateAdmin(admin.ModelAdmin):
-#     ...
-#     change_form_template = 'admin/preview_template.html'
-
-# custom_admin_site.register(models.Template, TemplateAdmin)
-class  TransactionResource(resources.ModelResource):
-    class Meta:
-        model = Transaction
-
-@ admin.register(Transaction)
-class TransactionAdmin(ExportMixin, admin.ModelAdmin):
-    # search_fields = ['chp_reference', 'familymember__name']
-    inlines = [FamilyGroupInline, FamilyMemberInline]
+class TransactionAdmin(nested_admin.SortableHiddenMixin, nested_admin.NestedModelAdmin):
+    inlines = [FamilyGroupInline,]
 
     def save_model(self, request, obj, form, change):
-        # obj.group = request.user.groups.all()
         obj.user = request.user
         super().save_model(request, obj, form, change)
 
@@ -153,21 +120,6 @@ class TransactionAdmin(ExportMixin, admin.ModelAdmin):
         # return qs.filter(user__groups__user=request.user)
         return qs.filter(user__groups=request.user.groups.first())
 
-
-        qs = super().get_queryset(request)
-        # print(qs)
-        transaction = qs
-        print(transaction)
-        template_path = 'report-pdf.html'
-        context = {"transaction":transaction}
-        response = HttpResponse(content_type='Application/pdf')
-        response['Content-Disposition'] = 'filename="report.pdf'
-        template = get_template(template_path)
-        html = template.render(context)
-        pisa_status = pisa.CreatePDF(html, dest=response)
-        if pisa_status.err:
-            return HttpResponse('we had some errors' + html )
-        return response
 
     def complete(self, obj):
         return obj.complete
@@ -189,8 +141,6 @@ class TransactionAdmin(ExportMixin, admin.ModelAdmin):
         # if obj.complete:
         return mark_safe(json2html.convert(json=obj.report, table_attributes="class=\"results\" style=\"overflow-x:auto;\""))
         # return 0
-    def fm_income(self,obj):
-        return obj.fm_income
 
     def export_csv(modeladmin, request, queryset):
         import csv
@@ -232,50 +182,51 @@ class TransactionAdmin(ExportMixin, admin.ModelAdmin):
             smart_str(u"household_rent"),
         ])
         for obj in queryset:
-            for fm in obj.fmember.all():
-                if obj.complete:
-                    writer.writerow([
-                        smart_str(obj.chp_reference),
-                        smart_str(fm.name),
-                        smart_str(fm.contact_id),
-                        smart_str(fm.date_of_birth),
-                        smart_str(fm.age),
-                        smart_str(fm.relationship),
-                        smart_str(fm.income),
-                        smart_str(obj.property_market_rent),
-                        smart_str(fm.family_group),
-                        smart_str(fm.family_group.last_rent),
-                        smart_str(fm.family_group.family_type),
-                        smart_str(fm.family_group.any_income_support_payment),
-                        smart_str(fm.family_group.cra_eligibilty),
-                        smart_str(fm.family_group.cra_amount),
-                        smart_str(fm.family_group.ftb_a),
-                        smart_str(fm.family_group.ftb_b),
-                        smart_str(fm.family_group.maintenance_amount),
-                        smart_str(fm.family_group.maintenance_type),
-                        smart_str(fm.family_group.maintenance_amount),
-                        smart_str(fm.family_group.number_of_additional_children),
-                        smart_str(obj.rent_effective_date),
-                        smart_str(obj.income_period),
-                        smart_str(obj.number_of_family_group),
-                        smart_str(obj.cruser),
-                        smart_str(obj.prop_id),
-                        smart_str(obj.state),
-                        smart_str(obj.cra_compon),
-                        smart_str(obj.household_rent),
-                    ])
-                elif not obj.complete:
-                    writer.writerow([
-                        smart_str(obj.chp_reference),
-                        smart_str('ERROR' ),
-                        smart_str('IN THE'),
-                        smart_str('INPUTS'),
-                        smart_str('PLEASE GO'),
-                        smart_str('BACK TO THE'),
-                        smart_str('APP AND '),
-                        smart_str('CORRECT IT'),
-                    ])
-                writer.writerows([])
+            for fg in obj.family_groups.all():
+                for fm in fg.family_members.all():
+                    if obj.complete:
+                        writer.writerow([
+                            smart_str(obj.chp_reference),
+                            smart_str(fm.name),
+                            smart_str(fm.contact_id),
+                            smart_str(fm.date_of_birth),
+                            smart_str(fm.age),
+                            smart_str(fm.relationship),
+                            smart_str(fm.income),
+                            smart_str(obj.property_market_rent),
+                            smart_str(fm.family_group),
+                            smart_str(fm.family_group.last_rent),
+                            smart_str(fm.family_group.family_type),
+                            smart_str(fm.family_group.any_income_support_payment),
+                            smart_str(fm.family_group.cra_eligibilty),
+                            smart_str(fm.family_group.cra_amount),
+                            smart_str(fm.family_group.ftb_a),
+                            smart_str(fm.family_group.ftb_b),
+                            smart_str(fm.family_group.maintenance_amount),
+                            smart_str(fm.family_group.maintenance_type),
+                            smart_str(fm.family_group.maintenance_amount),
+                            smart_str(fm.family_group.number_of_additional_children),
+                            smart_str(obj.rent_effective_date),
+                            smart_str(obj.income_period),
+                            smart_str(obj.number_of_family_group),
+                            smart_str(obj.cruser),
+                            smart_str(obj.prop_id),
+                            smart_str(obj.state),
+                            smart_str(obj.cra_compon),
+                            smart_str(obj.household_rent),
+                        ])
+                    elif not obj.complete:
+                        writer.writerow([
+                            smart_str(obj.chp_reference),
+                            smart_str('ERROR' ),
+                            smart_str('IN THE'),
+                            smart_str('INPUTS'),
+                            smart_str('PLEASE GO'),
+                            smart_str('BACK TO THE'),
+                            smart_str('APP AND '),
+                            smart_str('CORRECT IT'),
+                        ])
+                    writer.writerows([])
         return response
     export_csv.short_description = u"Export CSV"
     
@@ -301,6 +252,34 @@ class TransactionAdmin(ExportMixin, admin.ModelAdmin):
     display_text = ['Result']
     search_fields = ['chp_reference', 'user__username']
     actions = [export_csv,]
+  
+    max_num = 5
+
+
+
+admin.site.register(Transaction, TransactionAdmin)
+
+
+
+class FamilySituationRateInline(admin.TabularInline):
+    model = FamilySituationRate
+    extra = 0
+
+
+class FtbAMaximumPaymentInline(admin.TabularInline):
+    model = FtbAMaximumPayment
+    extra = 0
+
+
+class MaintenanceTypeRateInline(admin.TabularInline):
+    model = MaintenanceTypeRate
+    extra = 0
+
+
+class  TransactionResource(resources.ModelResource):
+    class Meta:
+        model = Transaction
+
 
 @ admin.register(
     FamilySituation,

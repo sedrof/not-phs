@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-^rq(x*d--6_#635*j84d5(fz9@-3(9vdr_s$9+^@cw08dq(ja'
-
+SECRET_KEY = 'nnbjh58y3vj!i&8fddcl$2$39e+l63%qq0^$5yx2hi729+ynyr'
+# SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    'nested_admin',
     'rest_framework',
     'import_export',
     'centrelink',
@@ -109,6 +110,18 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': str(os.path.join(BASE_DIR, "db.sqlite3"))
+    }
+}
+
+# hostname = os.environ['DBHOST']
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DBNAME'],
+        'HOST': os.environ['DBHOST'] + ".postgres.database.azure.com",
+        'USER': os.environ['DBUSER'] + "@" + os.environ['DBHOST'],
+        'PASSWORD': os.environ['DBPASS'] 
     }
 }
 

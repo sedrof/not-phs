@@ -105,24 +105,24 @@ SIMPLE_JWT = {
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(os.path.join(BASE_DIR, "db.sqlite3"))
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': str(os.path.join(BASE_DIR, "db.sqlite3"))
+#     }
+# }
 
 # hostname = os.environ['DBHOST']
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ['DBNAME'],
-#         'HOST': os.environ['DBHOST'] + ".postgres.database.azure.com",
-#         'USER': os.environ['DBUSER'] + "@" + os.environ['DBHOST'],
-#         'PASSWORD': os.environ['DBPASS'] 
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DBNAME'],
+        'HOST': os.environ['DBHOST'] + ".postgres.database.azure.com",
+        'USER': os.environ['DBUSER'] + "@" + os.environ['DBHOST'],
+        'PASSWORD': os.environ['DBPASS'] 
+    }
+}
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

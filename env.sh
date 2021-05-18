@@ -1,5 +1,5 @@
-export DBHOST="localhost"
-export DBUSER="manager"
-export DBNAME="pollsdb"
-export DBPASS="supersecretpass"
+export DBHOST="cra-calcc"
+export DBUSER="cra"
+export DBNAME="not-phs"
+export DBPASS="Hotmail12"
 

@@ -1,4 +1,4 @@
-$Env:DBHOST = "localhost"
-$Env:DBUSER = "manager"
-$Env:DBNAME = "pollsdb"
-$Env:DBPASS = "supersecretpass"
+$Env:DBHOST = "cra-calcc"
+$Env:DBUSER = "cra"
+$Env:DBNAME = "not-phs"
+$Env:DBPASS = "Hotmail12"

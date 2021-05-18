@@ -103,8 +103,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
 }
 
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
 
 DATABASES = {
     'default': {
@@ -115,15 +114,15 @@ DATABASES = {
 
 # hostname = os.environ['DBHOST']
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DBNAME'],
-        'HOST': os.environ['DBHOST'] + ".postgres.database.azure.com",
-        'USER': os.environ['DBUSER'] + "@" + os.environ['DBHOST'],
-        'PASSWORD': os.environ['DBPASS'] 
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ['DBNAME'],
+#         'HOST': os.environ['DBHOST'] + ".postgres.database.azure.com",
+#         'USER': os.environ['DBUSER'] + "@" + os.environ['DBHOST'],
+#         'PASSWORD': os.environ['DBPASS'] 
+#     }
+# }
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

@@ -138,8 +138,8 @@ class TransactionAdmin(nested_admin.SortableHiddenMixin, nested_admin.NestedMode
         return None
 
     def report(self, obj):
-        # if obj.complete:
-        return mark_safe(json2html.convert(json=obj.report, table_attributes="class=\"results\" style=\"overflow-x:auto;\""))
+        if obj.complete:
+            return mark_safe(json2html.convert(json=obj.report, table_attributes="class=\"results\" style=\"overflow-x:auto;\""))
         # return 0
 
     def export_csv(modeladmin, request, queryset):

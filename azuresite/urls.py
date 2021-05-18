@@ -42,7 +42,7 @@ class AdminSiteOTPRequiredMixinRedirSetup(AdminSiteOTPRequired):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         return redirect_to_login(redirect_to)
-admin.site.__class__ = AdminSiteOTPRequiredMixinRedirSetup
+# admin.site.__class__ = AdminSiteOTPRequiredMixinRedirSetup
 
 urlpatterns = [
     path('', admin.site.urls),
